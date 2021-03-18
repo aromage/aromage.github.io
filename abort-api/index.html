@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Abort APi example</title>
+  <title>요청취소 테스트</title>
   <style>
     .wrapper {
       width: 70%;
@@ -34,7 +34,7 @@
       <p class="reports"></p>
     </div>
     <div class="videoWrapper hidden">
-      <p>Sintel © copyright Blender Foundation | <a href="http://www.sintel.org/">www.sintel.org</a>.</p>
+      <p>해당영상은 다음 url에서 무단 도용하였습니다. | <a href="https://www.youtube.com/watch?v=I535HmcRljQ&t=25s">원본 보러가기</a>.</p>
     </div>
   </div>
 </body>
@@ -50,24 +50,35 @@
   let progressAnim;
   let animCount = 0;
 
+  //누르면 비디오 다운받음
   downloadBtn.addEventListener('click', fetchVideo);
 
+  //요청 취소 버튼
   abortBtn.addEventListener('click', () => {
     controller.abort();
     console.log('Download aborted');
     downloadBtn.classList.remove('hidden');
   });
 
+  //비디오 다운로드
   function fetchVideo() {
+    //abortController 세팅
     controller = new AbortController();
     const signal = controller.signal;
+
+    //버튼 보이는거 바꿔주고
     downloadBtn.classList.add('hidden');
     abortBtn.classList.remove('hidden');
+
+
     reports.textContent = 'Video awaiting download...';
     fetch(url, { signal }).then((response) => {
       if (response.status === 200) {
         runAnimation();
+        //이미 읽은 데이터인지 체크
         setTimeout(() => console.log('Body used: ', response.bodyUsed), 1);
+
+        //아니라면 blob으로 처리하게 보내기(binary large object)
         return response.blob();
       } else {
         throw new Error('Failed to fetch');
@@ -75,14 +86,15 @@
     }).then((myBlob) => {
       const video = document.createElement('video');
       video.setAttribute('controls', '');
+
+      //브라우저에서만 유효한 blobURL
       video.src = URL.createObjectURL(myBlob);
       videoWrapper.appendChild(video);
 
       videoWrapper.classList.remove('hidden');
       abortBtn.classList.add('hidden');
       downloadBtn.classList.add('hidden');
-
-      reports.textContent = 'Video ready to play';
+      reports.textContent = '로드완료';
     }).catch((e) => {
       abortBtn.classList.add('hidden');
       downloadBtn.classList.remove('hidden');
