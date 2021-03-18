@@ -74,7 +74,7 @@
     reports.textContent = '';
     fetch(url, { signal }).then((response) => {
       if (response.status === 200) {
-        // runAnimation();
+        runAnimation();
         //이미 읽은 데이터인지 체크
         // setTimeout(() => console.log('Body used: ', response.bodyUsed), 1);
 

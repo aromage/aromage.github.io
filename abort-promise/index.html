@@ -1,0 +1,47 @@
+<html>
+    <body>
+        <button id="btn">기다리기</button>
+    </body>
+</html>
+
+
+<script type="module">
+{ 
+    let abortController = null; 
+    document.querySelector('#btn').addEventListener('click', async (target) => {
+        if ( abortController ) {
+            abortController.abort(); // 5
+            abortController = null;
+            target.innerText = '기다리기';
+            return;
+        }
+
+        abortController = new AbortController();
+        target.innerText = '멈추기';
+
+        try {
+            const result = await calculate( abortController.signal );
+            alert( result );
+        } catch {
+            alert( '기다리기 완료' );
+        } finally {
+            abortController = null;
+            target.innerText = '기다리기';
+        }
+    });
+
+    function calculate( abortSignal ) {
+        return new Promise( ( resolve, reject ) => {
+            const timeout = setTimeout( ()=> {
+                resolve( 1 );
+            }, 5000 );
+
+            abortSignal.addEventListener( 'abort', () => { 
+                const error = new DOMException( '요청취소 에러', 'AbortError' );
+                clearTimeout( timeout );
+                reject( error );
+            });
+        });
+    }
+}
+</script>
