@@ -8,9 +8,9 @@
 <script type="module">
 { 
     let abortController = null; 
-    document.querySelector('#btn').addEventListener('click', async (target) => {
+    document.querySelector('#btn').addEventListener('click', async ({ target }) => {
         if ( abortController ) {
-            abortController.abort(); // 5
+            abortController.abort();
             abortController = null;
             target.innerText = '기다리기';
             return;
