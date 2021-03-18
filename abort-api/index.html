@@ -27,10 +27,10 @@
 
 <body>
   <div class="wrapper">
-    <h1>Simple offline video player</h1>
+    <h1>요청 취소 테스트(30mb비디오)</h1>
     <div class="controls">
-      <button class="download">Download video</button>
-      <button class="abort hidden">Cancel download</button>
+      <button class="download">비디오 다운받기</button>
+      <button class="abort hidden">취소하기</button>
       <p class="reports"></p>
     </div>
     <div class="videoWrapper hidden">
@@ -71,17 +71,17 @@
     abortBtn.classList.remove('hidden');
 
 
-    reports.textContent = 'Video awaiting download...';
+    reports.textContent = '';
     fetch(url, { signal }).then((response) => {
       if (response.status === 200) {
-        runAnimation();
+        // runAnimation();
         //이미 읽은 데이터인지 체크
-        setTimeout(() => console.log('Body used: ', response.bodyUsed), 1);
+        // setTimeout(() => console.log('Body used: ', response.bodyUsed), 1);
 
         //아니라면 blob으로 처리하게 보내기(binary large object)
         return response.blob();
       } else {
-        throw new Error('Failed to fetch');
+        throw new Error('fetch 실패');
       }
     }).then((myBlob) => {
       const video = document.createElement('video');
@@ -98,7 +98,7 @@
     }).catch((e) => {
       abortBtn.classList.add('hidden');
       downloadBtn.classList.remove('hidden');
-      reports.textContent = 'Download error: ' + e.message;
+      reports.textContent = '다운로드 에러: ' + e.message;
     }).finally(() => {
       clearInterval(progressAnim);
       animCount = 0;
@@ -108,10 +108,10 @@
   function runAnimation() {
     progressAnim = setInterval(() => {
       switch (animCount++ & 3) {
-        case 0: reports.textContent = 'Download occuring; waiting for video player to be constructed'; break;
-        case 1: reports.textContent = 'Download occuring; waiting for video player to be constructed.'; break;
-        case 2: reports.textContent = 'Download occuring; waiting for video player to be constructed..'; break;
-        case 3: reports.textContent = 'Download occuring; waiting for video player to be constructed...'; break;
+        case 0: reports.textContent = '다운로드중'; break;
+        case 1: reports.textContent = '다운로드중.'; break;
+        case 2: reports.textContent = '다운로드중..'; break;
+        case 3: reports.textContent = '다운로드중...'; break;
       }
     }, 300);
   }
